@@ -1,6 +1,3 @@
-Test de si ça marche 
-
-
 ## Exercice 3 - Dosimétrie
 -----------
 
@@ -68,3 +65,29 @@ Données :
 * Période de l'yttrium 90 : 64,05 $heures$
 * Energie totale émise par transition : 0.9336 $\frac{MeV}{Bq.s}$
 * On considère que les tissus hépatiques et la tumeur ont une masse volumique égale à 1.03 $\frac{g}{cm^3}$
+
+
+Première cellule de code pour répondre à la première question :
+
+import pandas as pd
+
+df = pd.read_csv("data/Table.csv", delimiter="\t", index_col=0)
+df
+
+rho_g_per_cm3 = 1.03
+df['Masse [g]'] = df["Volume [cm3]"]*rho_g_per_cm3
+df
+
+m_foie_lobe_d = df.loc["lobe_droit",'Masse [g]']
+
+import numpy as np
+
+delta_Mev_per_Bq_s = 0.9336
+T_y90_s = 64.05*3600
+dose_foie_limite_Gy = 120
+act_1 = (dose_foie_limite_Gy*m_foie_lobe_d*1e-3*np.log(2))/(T_y90_s*delta_Mev_per_Bq_s*1e6*1.602e-19)
+print(f"L'activité à injecter est de {act_1*1e-9:.2f} GBq pour atteindre {dose_foie_limite_Gy} Gy au lobe droit.")
+
+Ainsi le réponse est que l'activité à injecter est de 2.01 GBq pour atteindre 120 Gy au lobe droit.
+
+## La seconde question est : D'après le modèle de partitionnement, on doit estimer le  rapport de concentration entre la tumeur et le foie perfusé,
