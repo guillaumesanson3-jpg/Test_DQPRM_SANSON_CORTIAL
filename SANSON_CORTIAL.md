@@ -91,3 +91,34 @@ print(f"L'activité à injecter est de {act_1*1e-9:.2f} GBq pour atteindre {dose
 Ainsi le réponse est que l'activité à injecter est de 2.01 GBq pour atteindre 120 Gy au lobe droit.
 
 ## La seconde question est : D'après le modèle de partitionnement, on doit estimer le  rapport de concentration entre la tumeur et le foie perfusé,
+
+# a fair rapport des mean sur rapport des masses....
+ratio_tum_lobe = (df.loc["tum_dome_SPECT", "Mean"]*df.loc["lobe_droit", "Masse [g]"])/(df.loc["tum_dome_SPECT", "Masse [g]"]*df.loc["lobe_droit", "Mean"])
+print(f"Le rapport des concentrations est estimé à {ratio_tum_lobe:.2f}")
+
+Le rapport des concentrations est estimé à 287.78
+
+Dans le cas d'**absence de shunt pulmonaire**, les équations du modèle de partionnement deviennent:
+
+$$
+\begin{align}
+A_T  &= r \times A_N \frac{m_T}{m_N}\\
+A_N  &= \frac{A_{inj.}}{(1 + r \times \frac{m_T}{m_N})}
+\end{align}
+$$
+
+m_tum = df.loc["tum_dome_SPECT", "Masse [g]"]
+m_tot = df.loc["lobe_droit", "Masse [g]"]
+A_n = act_1/(1+ratio_tum_lobe*(m_tum/m_tot))
+A_t = ratio_tum_lobe*A_n*(m_tum/m_tot)
+print(f'Les activités dans le foie perfusé et la tumeur sont {A_n*1e-9:.2f} et {A_t*1e-9:.2f} GBq respectivement.')
+
+Les activités dans le foie perfusé et la tumeur sont 0.45 et 1.56 GBq respectivement.
+
+On peut alors estimer la dose à la tumeur
+
+dose_t = (A_t*T_y90_s*delta_Mev_per_Bq_s*1.602e-19*1e6)/(m_tum*1e-3*np.log(2))
+print(f'La dose à la tumeur est {dose_t:.2f} Gy')
+
+La dose à la tumeur est 7675.14 Gy
+
