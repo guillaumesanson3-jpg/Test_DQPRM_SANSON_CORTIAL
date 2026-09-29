@@ -1,3 +1,6 @@
+Test exercice Git SANSON Guillaume et CORTIAL Johan 29/09/2026
+
+
 ## Exercice 3 - Dosimétrie
 -----------
 
